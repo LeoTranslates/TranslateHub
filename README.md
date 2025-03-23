@@ -1,50 +1,90 @@
-# React + TypeScript + Vite
+# TranslateHub - Professional Translation Services
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TranslateHub is a web application for professional translation services, offering document translation and in-person appointment booking.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Document translation service with multiple document upload support
+- Dynamic pricing based on document type, urgency, and delivery method
+- In-person translation appointment booking
+- Multilingual support (English, French, Georgian)
+- User authentication and dashboard
+- Admin panel for managing orders and appointments
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Prerequisites
 
-- Configure the top-level `parserOptions` property like this:
+- Node.js (v16 or later)
+- npm or yarn
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/translatehub.git
+cd translatehub
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+2. Install dependencies:
+```bash
+npm install
 ```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+4. Open your browser and navigate to:
+```
+http://localhost:5173
+```
+
+### Available Scripts
+
+- `npm run dev` or `npm start`: Start the development server
+- `npm run build`: Build the application for production
+- `npm run preview`: Preview the production build locally
+- `npm run serve`: Serve the production build on port 3000
+- `npm run setup`: Install dependencies and start the development server
+- `npm run clean`: Clean the Vite cache
+
+## Testing the Application
+
+### Regular User
+
+1. Browse the homepage to learn about services
+2. Try the document translation service:
+   - Select document type, urgency, and delivery method
+   - Upload multiple documents
+   - See dynamic pricing updates
+3. Book an appointment:
+   - Select date and time
+   - Choose location (office or custom address)
+   - Add special instructions
+4. Create an account or log in to complete orders
+
+### Admin Access
+
+To access admin features:
+- Email: admin@example.com
+- Password: any password (e.g., "password123")
+
+Admin features include:
+- Managing translation orders
+- Managing appointments
+- Configuring payment methods
+
+## Technologies Used
+
+- React with TypeScript
+- Vite for build tooling
+- React Router for navigation
+- Tailwind CSS for styling
+- shadcn/ui for UI components
+- Zustand for state management
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
