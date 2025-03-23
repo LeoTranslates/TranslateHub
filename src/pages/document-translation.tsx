@@ -20,7 +20,7 @@ export default function DocumentTranslationPage() {
     selectedType, 
     urgency, 
     deliveryMethod, 
-    documentFile,
+    documentFiles,
     totalPrice,
     isLoading,
     error,
@@ -28,7 +28,7 @@ export default function DocumentTranslationPage() {
     setSelectedType,
     setUrgency,
     setDeliveryMethod,
-    setDocumentFile,
+    setDocumentFiles,
     submitOrder
   } = useDocumentService();
   const { user, isAuthenticated } = useAuth();
@@ -54,10 +54,10 @@ export default function DocumentTranslationPage() {
         return;
       }
       
-      if (!documentFile) {
+      if (documentFiles.length === 0) {
         toast({
           title: "Missing document",
-          description: "Please upload a document for translation",
+          description: "Please upload at least one document for translation",
           variant: "destructive",
         });
         return;
@@ -203,7 +203,12 @@ export default function DocumentTranslationPage() {
           
           <div className="space-y-2">
             <Label>{t('document.upload')}</Label>
-            <FileUploader onFileChange={setDocumentFile} />
+            <FileUploader onFileChange={setDocumentFiles} multiple={true} />
+            {documentFiles.length > 0 && (
+              <p className="text-sm text-muted-foreground mt-1">
+                {documentFiles.length} {documentFiles.length === 1 ? 'document' : 'documents'} selected
+              </p>
+            )}
           </div>
         </div>
         
@@ -214,6 +219,7 @@ export default function DocumentTranslationPage() {
               urgency={urgency}
               deliveryMethod={deliveryMethod}
               totalPrice={totalPrice}
+              documentCount={documentFiles.length}
             />
           )}
         </div>
@@ -236,6 +242,32 @@ export default function DocumentTranslationPage() {
               />
             </CardContent>
           </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Order Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Document Type:</span>
+                  <span>{selectedType?.name[language]}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Number of Documents:</span>
+                  <span>{documentFiles.length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Urgency:</span>
+                  <span>{t(`document.urgency.${urgency}`)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Delivery Method:</span>
+                  <span>{t(`document.delivery.${deliveryMethod}`)}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
         
         <div>
@@ -245,6 +277,7 @@ export default function DocumentTranslationPage() {
               urgency={urgency}
               deliveryMethod={deliveryMethod}
               totalPrice={totalPrice}
+              documentCount={documentFiles.length}
             />
           )}
         </div>
@@ -264,7 +297,7 @@ export default function DocumentTranslationPage() {
         <h2 className="text-2xl font-bold">Order Submitted Successfully</h2>
         
         <p className="text-muted-foreground max-w-md mx-auto">
-          Thank you for your order. We have received your document and will begin the translation process.
+          Thank you for your order. We have received your {documentFiles.length > 1 ? `${documentFiles.length} documents` : 'document'} and will begin the translation process.
           You can track the status of your order in your dashboard.
         </p>
         

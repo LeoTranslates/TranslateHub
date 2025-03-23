@@ -1,53 +1,63 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload, X, FileText } from "lucide-react";
+import { Upload, X, FileText, Plus } from "lucide-react";
 import { useLanguage } from "@/hooks/use-language";
 
 interface FileUploaderProps {
-  onFileChange: (file: File | null) => void;
+  onFileChange: (files: File[]) => void;
   accept?: string;
   maxSize?: number; // in MB
+  multiple?: boolean;
 }
 
 export function FileUploader({ 
   onFileChange, 
   accept = ".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png", 
-  maxSize = 10 
+  maxSize = 10,
+  multiple = true
 }: FileUploaderProps) {
   const { t } = useLanguage();
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0] || null;
+    const selectedFiles = e.target.files;
     
-    if (!selectedFile) {
-      setFile(null);
-      onFileChange(null);
+    if (!selectedFiles || selectedFiles.length === 0) {
       return;
     }
     
-    // Check file size
-    if (selectedFile.size > maxSize * 1024 * 1024) {
-      setError(`File size exceeds ${maxSize}MB limit`);
-      setFile(null);
-      onFileChange(null);
+    const newFiles: File[] = [];
+    let hasError = false;
+    
+    // Check each file
+    Array.from(selectedFiles).forEach(file => {
+      // Check file size
+      if (file.size > maxSize * 1024 * 1024) {
+        setError(`File ${file.name} exceeds ${maxSize}MB limit`);
+        hasError = true;
+        return;
+      }
+      
+      newFiles.push(file);
+    });
+    
+    if (hasError) {
       return;
     }
     
     setError(null);
-    setFile(selectedFile);
-    onFileChange(selectedFile);
+    const updatedFiles = multiple ? [...files, ...newFiles] : newFiles;
+    setFiles(updatedFiles);
+    onFileChange(updatedFiles);
   };
 
-  const handleRemoveFile = () => {
-    setFile(null);
-    setError(null);
-    onFileChange(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+  const handleRemoveFile = (index: number) => {
+    const updatedFiles = [...files];
+    updatedFiles.splice(index, 1);
+    setFiles(updatedFiles);
+    onFileChange(updatedFiles);
   };
 
   const handleButtonClick = () => {
@@ -61,10 +71,11 @@ export function FileUploader({
         ref={fileInputRef}
         onChange={handleFileChange}
         accept={accept}
+        multiple={multiple}
         className="hidden"
       />
       
-      {!file ? (
+      {files.length === 0 ? (
         <div 
           className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
           onClick={handleButtonClick}
@@ -80,28 +91,45 @@ export function FileUploader({
             <p className="pl-1">or drag and drop</p>
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            {accept.split(',').join(', ')} (Max {maxSize}MB)
+            {accept.split(',').join(', ')} (Max {maxSize}MB per file)
           </p>
+          {multiple && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">You can upload multiple files</p>}
         </div>
       ) : (
-        <div className="flex items-center p-4 space-x-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
-          <FileText className="h-8 w-8 text-primary" />
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-              {file.name}
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              {(file.size / 1024 / 1024).toFixed(2)} MB
-            </p>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleRemoveFile}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-          >
-            <X className="h-4 w-4" />
-          </Button>
+        <div className="space-y-3">
+          {files.map((file, index) => (
+            <div key={index} className="flex items-center p-3 space-x-4 bg-gray-50 dark:bg-gray-900 rounded-lg border">
+              <FileText className="h-8 w-8 text-primary shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                  {file.name}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {(file.size / 1024 / 1024).toFixed(2)} MB
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleRemoveFile(index)}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+          
+          {multiple && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleButtonClick}
+              className="mt-2 w-full"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add More Files
+            </Button>
+          )}
         </div>
       )}
       

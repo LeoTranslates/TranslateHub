@@ -9,13 +9,15 @@ interface PricingCalculatorProps {
   urgency: UrgencyLevel;
   deliveryMethod: DeliveryMethod;
   totalPrice: number;
+  documentCount?: number;
 }
 
 export function PricingCalculator({
   selectedType,
   urgency,
   deliveryMethod,
-  totalPrice
+  totalPrice,
+  documentCount = 1
 }: PricingCalculatorProps) {
   const { t, language } = useLanguage();
 
@@ -37,6 +39,7 @@ export function PricingCalculator({
   const urgencyMultiplier = getUrgencyMultiplier();
   const deliveryFee = getDeliveryFee();
   const subtotal = basePrice * urgencyMultiplier;
+  const documentsTotal = subtotal * documentCount;
 
   return (
     <Card>
@@ -53,6 +56,13 @@ export function PricingCalculator({
             <div className="flex justify-between text-sm">
               <span>{t('document.urgency.urgent')}</span>
               <span>+{formatPrice(basePrice * 0.5)}</span>
+            </div>
+          )}
+          
+          {documentCount > 1 && (
+            <div className="flex justify-between text-sm">
+              <span>Number of documents</span>
+              <span>× {documentCount}</span>
             </div>
           )}
           

@@ -23,8 +23,8 @@ export type Order = {
   deliveryMethod: DeliveryMethod;
   status: 'pending' | 'processing' | 'completed' | 'cancelled';
   totalPrice: number;
-  documentUrl?: string;
-  translatedDocumentUrl?: string;
+  documentUrls?: string[];
+  translatedDocumentUrls?: string[];
   createdAt: string;
   updatedAt?: string;
 };
@@ -36,13 +36,13 @@ type DocumentServiceStore = {
   selectedType: DocumentType | null;
   urgency: UrgencyLevel;
   deliveryMethod: DeliveryMethod;
-  documentFile: File | null;
+  documentFiles: File[];
   totalPrice: number;
   fetchDocumentTypes: () => Promise<void>;
   setSelectedType: (type: DocumentType | null) => void;
   setUrgency: (urgency: UrgencyLevel) => void;
   setDeliveryMethod: (method: DeliveryMethod) => void;
-  setDocumentFile: (file: File | null) => void;
+  setDocumentFiles: (files: File[]) => void;
   calculatePrice: () => number;
   submitOrder: (userId: string) => Promise<Order | null>;
   reset: () => void;
@@ -55,7 +55,7 @@ export const useDocumentService = create<DocumentServiceStore>((set, get) => ({
   selectedType: null,
   urgency: 'standard',
   deliveryMethod: 'online',
-  documentFile: null,
+  documentFiles: [],
   totalPrice: 0,
   
   fetchDocumentTypes: async () => {
@@ -83,36 +83,41 @@ export const useDocumentService = create<DocumentServiceStore>((set, get) => ({
     set({ totalPrice: get().calculatePrice() });
   },
   
-  setDocumentFile: (file) => {
-    set({ documentFile: file });
+  setDocumentFiles: (files) => {
+    set({ documentFiles: files });
+    set({ totalPrice: get().calculatePrice() });
   },
   
   calculatePrice: () => {
-    const { selectedType, urgency, deliveryMethod } = get();
+    const { selectedType, urgency, deliveryMethod, documentFiles } = get();
     
     if (!selectedType) return 0;
     
-    let price = selectedType.basePrice;
+    // Base price per document
+    let pricePerDocument = selectedType.basePrice;
     
     // Apply urgency multiplier
     if (urgency === 'urgent') {
-      price *= 1.5; // 50% more for urgent
+      pricePerDocument *= 1.5; // 50% more for urgent
     }
     
-    // Apply delivery method fee
+    // Calculate total for all documents
+    let totalDocumentsPrice = pricePerDocument * Math.max(1, documentFiles.length);
+    
+    // Apply delivery method fee (only once, not per document)
     if (deliveryMethod === 'postal') {
-      price += 10; // $10 for postal delivery
+      totalDocumentsPrice += 10; // $10 for postal delivery
     } else if (deliveryMethod === 'pickup') {
-      price += 5; // $5 for pickup
+      totalDocumentsPrice += 5; // $5 for pickup
     }
     
-    return price;
+    return totalDocumentsPrice;
   },
   
   submitOrder: async (userId) => {
-    const { selectedType, urgency, deliveryMethod, documentFile, totalPrice } = get();
+    const { selectedType, urgency, deliveryMethod, documentFiles, totalPrice } = get();
     
-    if (!selectedType || !documentFile) {
+    if (!selectedType || documentFiles.length === 0) {
       set({ error: "Missing required information" });
       return null;
     }
@@ -120,8 +125,8 @@ export const useDocumentService = create<DocumentServiceStore>((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      // In a real app, we would upload the file to storage here
-      // const documentUrl = await uploadFile(documentFile);
+      // In a real app, we would upload the files to storage here
+      // const documentUrls = await Promise.all(documentFiles.map(file => uploadFile(file)));
       
       const order: Order = {
         userId,
@@ -131,7 +136,7 @@ export const useDocumentService = create<DocumentServiceStore>((set, get) => ({
         deliveryMethod,
         status: 'pending',
         totalPrice,
-        documentUrl: 'mock-url-for-demo',
+        documentUrls: documentFiles.map((_, i) => `mock-url-for-demo-${i}`),
         createdAt: new Date().toISOString(),
       };
       
@@ -150,7 +155,7 @@ export const useDocumentService = create<DocumentServiceStore>((set, get) => ({
       selectedType: null,
       urgency: 'standard',
       deliveryMethod: 'online',
-      documentFile: null,
+      documentFiles: [],
       totalPrice: 0,
       error: null,
     });

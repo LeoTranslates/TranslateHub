@@ -25,6 +25,8 @@ export function OrderCard({ order, isAdmin = false, onStatusChange }: OrderCardP
     }
   };
 
+  const documentCount = order.documentUrls?.length || 1;
+
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -43,6 +45,12 @@ export function OrderCard({ order, isAdmin = false, onStatusChange }: OrderCardP
             <span className="text-muted-foreground">{t('document.urgency')}</span>
             <span>{t(`document.urgency.${order.urgency}`)}</span>
           </div>
+          {documentCount > 1 && (
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Documents</span>
+              <span>{documentCount}</span>
+            </div>
+          )}
           <div className="flex justify-between">
             <span className="text-muted-foreground">{t('document.delivery')}</span>
             <span>{t(`document.delivery.${order.deliveryMethod}`)}</span>
@@ -58,11 +66,15 @@ export function OrderCard({ order, isAdmin = false, onStatusChange }: OrderCardP
         </div>
       </CardContent>
       <CardFooter className="flex justify-between pt-2">
-        {order.translatedDocumentUrl && (
-          <Button variant="outline" size="sm" className="flex items-center gap-1">
-            <Download className="h-4 w-4" />
-            Download
-          </Button>
+        {order.translatedDocumentUrls && order.translatedDocumentUrls.length > 0 && (
+          <div className="flex gap-2">
+            {order.translatedDocumentUrls.map((url, index) => (
+              <Button key={index} variant="outline" size="sm" className="flex items-center gap-1">
+                <Download className="h-4 w-4" />
+                {documentCount > 1 ? `Doc ${index + 1}` : 'Download'}
+              </Button>
+            ))}
+          </div>
         )}
         
         {isAdmin && onStatusChange && (

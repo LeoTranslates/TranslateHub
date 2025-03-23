@@ -38,8 +38,8 @@ const mockOrders: Order[] = [
     deliveryMethod: 'online',
     status: 'completed',
     totalPrice: 25,
-    documentUrl: 'mock-url-1',
-    translatedDocumentUrl: 'mock-translated-url-1',
+    documentUrls: ['mock-url-1'],
+    translatedDocumentUrls: ['mock-translated-url-1'],
     createdAt: '2023-01-15T10:30:00Z',
     updatedAt: '2023-01-16T14:20:00Z'
   },
@@ -59,8 +59,8 @@ const mockOrders: Order[] = [
     urgency: 'urgent',
     deliveryMethod: 'postal',
     status: 'processing',
-    totalPrice: 62.5, // 35 * 1.5 + 10
-    documentUrl: 'mock-url-2',
+    totalPrice: 115, // (35 * 1.5 * 2) + 10
+    documentUrls: ['mock-url-2-1', 'mock-url-2-2'],
     createdAt: '2023-03-20T09:15:00Z',
     updatedAt: '2023-03-20T11:45:00Z'
   }
