@@ -183,6 +183,31 @@ export const useLanguage = create<LanguageStore>()(
           fr: 'Soumettre la Commande',
           ka: 'შეკვეთის გაგზავნა',
         },
+        'document.multipleFiles': {
+          en: 'You can upload multiple files',
+          fr: 'Vous pouvez télécharger plusieurs fichiers',
+          ka: 'შეგიძლიათ ატვირთოთ რამდენიმე ფაილი',
+        },
+        'document.addMore': {
+          en: 'Add More Files',
+          fr: 'Ajouter Plus de Fichiers',
+          ka: 'მეტი ფაილის დამატება',
+        },
+        'document.filesSelected': {
+          en: 'document selected',
+          fr: 'document sélectionné',
+          ka: 'არჩეული დოკუმენტი',
+        },
+        'document.filesSelectedPlural': {
+          en: 'documents selected',
+          fr: 'documents sélectionnés',
+          ka: 'არჩეული დოკუმენტები',
+        },
+        'document.numberOfDocuments': {
+          en: 'Number of Documents',
+          fr: 'Nombre de Documents',
+          ka: 'დოკუმენტების რაოდენობა',
+        },
         
         // Appointment booking
         'appointment.title': {
@@ -388,6 +413,11 @@ export const useLanguage = create<LanguageStore>()(
           fr: 'Annulé',
           ka: 'გაუქმებული',
         },
+        'status.confirmed': {
+          en: 'Confirmed',
+          fr: 'Confirmé',
+          ka: 'დადასტურებული',
+        },
         'payment.card': {
           en: 'Credit Card',
           fr: 'Carte de Crédit',
@@ -422,6 +452,16 @@ export const useLanguage = create<LanguageStore>()(
           en: 'Next',
           fr: 'Suivant',
           ka: 'შემდეგი',
+        },
+        'error.required': {
+          en: 'This field is required',
+          fr: 'Ce champ est obligatoire',
+          ka: 'ეს ველი აუცილებელია',
+        },
+        'error.fileSize': {
+          en: 'File size exceeds limit',
+          fr: 'La taille du fichier dépasse la limite',
+          ka: 'ფაილის ზომა აღემატება ლიმიტს',
         },
       },
       t: (key) => {

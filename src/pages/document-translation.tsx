@@ -102,8 +102,7 @@ export default function DocumentTranslationPage() {
         title: "Error",
         description: "Failed to submit order. Please try again.",
         variant: "destructive",
-      });
-    } finally {
+      });} finally {
       setIsSubmitting(false);
     }
   };
@@ -206,7 +205,9 @@ export default function DocumentTranslationPage() {
             <FileUploader onFileChange={setDocumentFiles} multiple={true} />
             {documentFiles.length > 0 && (
               <p className="text-sm text-muted-foreground mt-1">
-                {documentFiles.length} {documentFiles.length === 1 ? 'document' : 'documents'} selected
+                {documentFiles.length} {documentFiles.length === 1 
+                  ? t('document.filesSelected') 
+                  : t('document.filesSelectedPlural')}
               </p>
             )}
           </div>
@@ -254,7 +255,7 @@ export default function DocumentTranslationPage() {
                   <span>{selectedType?.name[language]}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Number of Documents:</span>
+                  <span>{t('document.numberOfDocuments')}:</span>
                   <span>{documentFiles.length}</span>
                 </div>
                 <div className="flex justify-between">

@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function AuthPage() {
   const { t } = useLanguage();
-  const { login, register, isAuthenticated, isLoading, error } = useAuth();
+  const { login, register, isAuthenticated, isLoading, error, clearError } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,7 +26,10 @@ export default function AuthPage() {
     if (modeParam === 'login' || modeParam === 'register') {
       setMode(modeParam);
     }
-  }, [location]);
+    
+    // Clear any previous errors when switching modes
+    clearError();
+  }, [location, clearError]);
   
   // Redirect if already authenticated
   useEffect(() => {
@@ -45,8 +48,9 @@ export default function AuthPage() {
         description: error,
         variant: "destructive",
       });
+      clearError();
     }
-  }, [error, toast]);
+  }, [error, toast, clearError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

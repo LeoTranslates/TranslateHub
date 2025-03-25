@@ -35,7 +35,7 @@ export function FileUploader({
     Array.from(selectedFiles).forEach(file => {
       // Check file size
       if (file.size > maxSize * 1024 * 1024) {
-        setError(`File ${file.name} exceeds ${maxSize}MB limit`);
+        setError(t('error.fileSize') + `: ${file.name} (${maxSize}MB)`);
         hasError = true;
         return;
       }
@@ -93,7 +93,7 @@ export function FileUploader({
           <p className="text-xs text-gray-500 dark:text-gray-400">
             {accept.split(',').join(', ')} (Max {maxSize}MB per file)
           </p>
-          {multiple && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">You can upload multiple files</p>}
+          {multiple && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('document.multipleFiles')}</p>}
         </div>
       ) : (
         <div className="space-y-3">
@@ -127,7 +127,7 @@ export function FileUploader({
               className="mt-2 w-full"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Add More Files
+              {t('document.addMore')}
             </Button>
           )}
         </div>

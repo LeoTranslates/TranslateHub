@@ -11,26 +11,13 @@ type User = {
 
 type AuthStore = {
   user: User | null;
-  isAuthenticated: boolean{% code path="src/hooks/use-auth.ts" type="create" %}
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { fine } from '@/lib/fine';
-
-type User = {
-  id: string;
-  email: string;
-  name: string;
-  role: 'admin' | 'client';
-};
-
-type AuthStore = {
-  user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  clearError: () => void;
 };
 
 export const useAuth = create<AuthStore>()(
@@ -41,6 +28,11 @@ export const useAuth = create<AuthStore>()(
       isLoading: false,
       error: null,
       login: async (email, password) => {
+        if (!email || !password) {
+          set({ error: "Email and password are required", isLoading: false });
+          return;
+        }
+        
         set({ isLoading: true, error: null });
         try {
           // Mock login - would be replaced with Firebase Auth
@@ -62,6 +54,11 @@ export const useAuth = create<AuthStore>()(
         }
       },
       register: async (email, password) => {
+        if (!email || !password) {
+          set({ error: "Email and password are required", isLoading: false });
+          return;
+        }
+        
         set({ isLoading: true, error: null });
         try {
           // Mock registration - would be replaced with Firebase Auth
@@ -88,6 +85,9 @@ export const useAuth = create<AuthStore>()(
         } catch (error) {
           set({ error: "Logout failed", isLoading: false });
         }
+      },
+      clearError: () => {
+        set({ error: null });
       }
     }),
     {

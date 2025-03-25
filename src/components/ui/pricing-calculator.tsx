@@ -38,8 +38,9 @@ export function PricingCalculator({
   const basePrice = selectedType.basePrice;
   const urgencyMultiplier = getUrgencyMultiplier();
   const deliveryFee = getDeliveryFee();
-  const subtotal = basePrice * urgencyMultiplier;
-  const documentsTotal = subtotal * documentCount;
+  const pricePerDocument = basePrice * urgencyMultiplier;
+  const documentsTotal = pricePerDocument * Math.max(1, documentCount);
+  const finalTotal = documentsTotal + deliveryFee;
 
   return (
     <Card>
@@ -61,7 +62,7 @@ export function PricingCalculator({
           
           {documentCount > 1 && (
             <div className="flex justify-between text-sm">
-              <span>Number of documents</span>
+              <span>{t('document.numberOfDocuments')}</span>
               <span>× {documentCount}</span>
             </div>
           )}
@@ -81,7 +82,7 @@ export function PricingCalculator({
           
           <div className="flex justify-between font-semibold">
             <span>{t('document.price')}</span>
-            <span>{formatPrice(totalPrice)}</span>
+            <span>{formatPrice(finalTotal)}</span>
           </div>
         </div>
       </CardContent>
